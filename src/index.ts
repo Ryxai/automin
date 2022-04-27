@@ -6,6 +6,7 @@ const port = '9540';
 const app = express();
 app.use(bodyParser.json());
 
+//CORS handling for Marvin
 app.options('/*',(req, res) => {
   res.header("Access-Control-Allow-Headers", "Content-Type, contenttype, X-Api-Key, Access-Control-Allow-Methods,Access-Control-Allow-Origin");
   res.header("Access-Control-Allow-Methods", "OPTIONS, POST, GET");
@@ -13,6 +14,8 @@ app.options('/*',(req, res) => {
   res.sendStatus(200);
 });
 
+
+//Linking Rescuetime to Marvin for timer start/stop etc
 app.post('/rescue_time_start', (req, res) => {
   const duration = Math.ceil(((req.body.isWork ? req.body.workDuration - req.body.elapsed : req.body.breakDuration - req.body.elapsed)/60000)/5)*5;
   console.log(req.body);

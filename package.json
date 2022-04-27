@@ -1,6 +1,6 @@
 {
   "name": "automin",
-  "version": "1.0.0",
+  "version": "0.0.1-alpha",
   "description": "Simple passthrough server automation tool. Webhooks come in, webhooks go out. You can't explain that.",
   "main": "dist/index.js",
   "scripts": {
