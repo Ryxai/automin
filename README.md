@@ -16,7 +16,7 @@ Run from the directory of the app using `npm start`. It currently used the local
 *If you'd like to specify a port please specify it as an argument `npm start #portnum`.*
 
 ## Setting Up Amazing Marvin
-You will need to enable the API strategy. Then add the following webhooks ![Webhook structure](https://postimg.cc/dLYBXCRq).
+You will need to enable the API strategy. Then add the following webhooks ![Webhook structure](https://i.postimg.cc/BsN9wm3N/i-Screen-Shoter-2022-04-27-01-47-01-487.jpg).
 
 You will then need to get your API key from rescuetime [here](https://www.rescuetime.com/anapi/manage). Click on the headers so it brings
 up an extra dialog. Hit enter once, the type `X-Api-Key: "your api-key'`. You will need to complete this process for each webhook.
