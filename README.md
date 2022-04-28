@@ -7,6 +7,10 @@ In this early stage only working with [Rescuetime](https://rescuetime.com) and [
 Clone this repo then run `npm build` followed by `npm start`. By defaut this will run on port **9540** unless it is changed in index.ts.
 (_Note_: You will need to rebuild the project and update your webhook calls in Amazing Marvin). 
 
+## Usage
+
+Run from the directory of the app using `npm start`. If you'd like to specify a port please specify it as an argument `npm start #portnum`.
+
 ## Setting Up Amazing Marvin
 You will need to enable the API strategy. Then add the following webhooks ![Webhook structure]wawwws(https://postimg.cc/dLYBXCRq).
 

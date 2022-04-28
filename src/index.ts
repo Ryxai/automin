@@ -3,6 +3,7 @@ import process from 'process';
 import express from 'express';
 import bodyParser from 'body-parser';
 
+//If given a port number will default to that port instead of 9540
 const port = process.argv.length > 2 ? process.argv[2] : '9540';
 const app = express();
 app.use(bodyParser.json());
@@ -20,7 +21,7 @@ app.options('/*',(req, res) => {
 //Linking Rescuetime to Marvin for timer start/stop etc
 app.post('/rescue_time_start', (req, res) => {
   res.set("Access-Control-Allow-Headers", "Content-Type, contenttype, X-Api-Key, Access-Control-Allow-Methods,Access-Control-Allow-Origin");
-  res.set("Access-Control-Allow-Methods", "OPTIONS, POST, GET");
+  res.set("Access-Control-Allow-Methods", "OPTIONS, POST");
   res.set("Access-Control-Allow-Origin","*");
   const duration = Math.ceil(((req.body.isWork ? req.body.workDuration - req.body.elapsed : req.body.breakDuration - req.body.elapsed)/60000)/5)*5;
   //console.log(req.body);
@@ -31,7 +32,7 @@ app.post('/rescue_time_start', (req, res) => {
 
 app.post('/rescue_time_end', (req, res) => {
   res.set("Access-Control-Allow-Headers", "Content-Type, contenttype, X-Api-Key, Access-Control-Allow-Methods,Access-Control-Allow-Origin");
-  res.set("Access-Control-Allow-Methods", "OPTIONS, POST, GET");
+  res.set("Access-Control-Allow-Methods", "OPTIONS, POST");
   res.set("Access-Control-Allow-Origin","*");
   //console.log(req.body);
   console.log(`Passing rescuetime an end session prompt`);
