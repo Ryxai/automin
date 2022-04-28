@@ -9,7 +9,8 @@ Clone this repo then run `npm build` followed by `npm start`. By defaut this wil
 
 ## Usage
 
-Run from the directory of the app using `npm start`. If you'd like to specify a port please specify it as an argument `npm start #portnum`.
+Run from the directory of the app using `npm start`. It currently used the local environment variable $PORT. For legacy I have left the previous methodology commented in for usage.
+*If you'd like to specify a port please specify it as an argument `npm start #portnum`.*
 
 ## Setting Up Amazing Marvin
 You will need to enable the API strategy. Then add the following webhooks ![Webhook structure]wawwws(https://postimg.cc/dLYBXCRq).
