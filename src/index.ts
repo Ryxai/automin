@@ -3,11 +3,7 @@ import process from 'process';
 import express from 'express';
 import bodyParser from 'body-parser';
 
-//If given a port number will default to that port instead of 9540
-//Localhost usage
-//const port = process.argv.length > 2 ? process.argv[2] : '9540';
-//Heroku usage
-const port = process.env.PORT || 80;
+const port = process.argv[2] || process.env.PORT || 80;
 const app = express();
 app.use(bodyParser.json());
 
