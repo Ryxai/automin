@@ -4,7 +4,7 @@ In this early stage only working with [Rescuetime](https://rescuetime.com) and [
 
 ## Installation
 
-Clone this repo then run `npm build` followed by `npm start`.
+Clone this repo then run `npm run build` followed by `npm start`.
 (_Note_: You will need to rebuild the project and update your webhook calls in Amazing Marvin). 
 
 ## Usage
