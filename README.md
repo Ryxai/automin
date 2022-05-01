@@ -11,13 +11,24 @@ Clone this repo then run `npm run build` followed by `npm start`.
 
 Run from the directory of the app using `npm start`. It will either take a command line argument, an environment variable `$PORT` or will default to port 80.
 
-*Local Mode*:
+### Local Mode
 
 *If you'd like to specify a port please specify it as an argument `npm start #portnum`.* If you use this method your url will be `http://localhost:portnum` where portnum
 is the port you chose. Be aware that using this method will only allow amazing marvin's timers to call rescuetime from the same device you run the server on. You need to
-host the code remotely in order to run it from a mobile device. Heroku, Google Cloud, Azure are all viable options here.
+host the code remotely in order to run it from a mobile device. Heroku, Google Cloud, Azure, etc are all viable options here.
 
 **NOTE**: running in local mode may cause issues with safari and the marvin desktop app. 
+
+### Heroku
+
+The package has been updated to work seamlessly with heroku. Currently it now supports quick deployment to heroku as well as support for enabling a secure mode.
+Follow the instructions [here](https://devcenter.heroku.com/articles/git) to deploy to git. 
+
+#### Enabling Secure Mode for Heroku
+
+Please use the command `$>heroku config:set SECURE=true` to enable secure mode. This will require use of an api key for all future requests. Run `npm run cycle-key`
+to generate a new api key and upload the hashed one your heroku app. You will find the api-key generated into the `keyfile` in the package directory. To enable it
+for Amazing Marvin, make sure you add the header `Automin-API-Key: %keygoeshere%` to your header requests for webhooks.
 
 ## Setting Up Amazing Marvin to call Rescuetime
 You will need to enable the API strategy. Once you have the server running you will need webhooks for each of the possible timer settings. The following settings
