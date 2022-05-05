@@ -94,7 +94,8 @@ app.use((req, res, next) => {
       error:'api-oreq-enforcement-failure',
       message: 'failed to include origin-request',
       details: 'Origin-Request headers are enforced when querying the api, please ensure all triggered api calls include this header'
-    })
+    });
+    return;
   }
   next();
 })
