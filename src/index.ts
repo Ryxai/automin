@@ -3,24 +3,46 @@ import process from 'process';
 import express from 'express';
 import bodyParser from 'body-parser';
 import {compare} from 'bcrypt';
-import {MultiTimer} from './interfaces';
+import {MultiTimer,
+  MarvinTimer,
+  MarvinPomodoroTimer,
+  marvinPomodoroTimerSchema,
+  timerSchema,
+  marvinTimerSchema,
+  MarvinTimerSchema,
+  MarvinPomodoroTimerSchema,
+  TimerSchema} from './interfaces';
+import Ajv from 'ajv/dist/jtd';
 
 const port = process.argv[2] || process.env.PORT || 80;
 const app = express();
+const ajv = new Ajv();
+const tryParseMarvinTimer= ajv.compileParser<MarvinTimerSchema>(marvinTimerSchema);
+const tryParseMarvinPomo= ajv.compileParser<MarvinPomodoroTimerSchema>(marvinPomodoroTimerSchema);
+const serializeTimer= ajv.compileSerializer<TimerSchema>(timerSchema);
 const default_token = "DEFAULT!!!"; // To satisfy typing issues w/ bcrypt
 const hashed_apikey = process.env.APIKEY || "";
 const isSecure = process.env.APIKEY ? (process.env.SECURE === "true") || false : false;
-const timer : MultiTimer = MultiTimer();
+const timer : MultiTimer = new MultiTimer();
 app.use(bodyParser.json());
 
+/* Internal functions */
 
-
+const updateDuration = () => {
+  const time = Date.now();
+  const diff = time - timer.lastUpdated;
+  timer.elapsed += diff;
+  timer.lastUpdated = time;
+}
 
 const apiKeyCheck = async (req : express.Request) => {
   return isSecure &&
     !(await compare(req.get("Automin-API-Key") ?? default_token, hashed_apikey));
 }
 
+
+/*General Routing */
+/*Middleware*/
 
 app.use((req, res, next) => {
   console.log(`Request from ${req.ips}`);
@@ -32,6 +54,24 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+  if (req.get("Origin-Request")=="Marvin-Timer") {
+    const parsedTimer = tryParseMarvinTimer(req.body);
+    const parsedPomo = tryParseMarvinPomo(req.body);
+    if (!parsedTimer && !parsedPomo) {
+        res.sendStatus(400);
+        return;
+    }
+    if (parsedTimer) {
+      timer.updateTimer(parsedTimer  as unknown as MarvinTimer);
+    }
+    else {
+      timer.updatePomodoroTimer(parsedPomo as unknown as MarvinPomodoroTimer); 
+    }
+  }
+  next();
+});
+
 
 
 //CORS handling for Marvin
@@ -41,7 +81,6 @@ app.options('/*',(_, res) => {
   res.set("Access-Control-Allow-Origin","*");
   res.sendStatus(200);
 });
-
 
 /*Rescue Time*/
 
@@ -70,11 +109,12 @@ app.post('/rescue_time_end', async (req, res) => {
 
 
 /* Pomodoro API */
-app.get("/pomotimer", (req, res) => {
-  res.set("Access-Control-Allow-Headers", "Content-Type, contenttype, X-Api-Key, Access-Control-Allow-Methods,Access-Control-Allow-Origin,Automin-API-Key");
+app.get("/remaining_duration", (req, res) => {
+  res.set("Access-Control-Allow-Headers", "Content-Type, contenttype, X-Api-Key, Access-Control-Allow-Methods,Access-Control-Allow-Origin,Automin-API-Key, Origin-Request");
   res.set("Access-Control-Allow-Methods", "OPTIONS, POST");
   res.set("Access-Control-Allow-Origin","*");
-  
+  updateDuration();
+  res.json(timer);
 });
 
 app.get("/", (_, res) => res.send("See https://github.com/Ryxai/automin for details on how to host your own!"));
