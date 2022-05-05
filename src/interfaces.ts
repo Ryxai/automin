@@ -47,7 +47,7 @@ export class MultiTimer implements Timer {
     this.isPopulated = false;
     this.lastUpdated = Date.now();
   }
-  
+
   updateTimer = (timer: MarvinTimer) => {
     this.elapsed = timer.elapsed;
     this.progress = timer.progress;

@@ -48,7 +48,13 @@ app.use((req, res, next) => {
   console.log(`Request from ${req.ips}`);
   if (!apiKeyCheck(req) && req.originalUrl !== "/"){
     console.log(`Failure to handle authentication: ${req.get("Automin-API-Key")}`);
-    res.sendStatus(401);
+    res.status(401).json({error: 'Auth-fail',
+                         message: 'Failed to authenticate api-key',
+                         detail: 'Server api access is secured and requires'
+                         + 'the correct api-key. If you are the owner of this'
+                         + 'server please cycle your keys to update, otherwise'
+                         + 'please contact your server administrator for'
+                         + 'further instructions'});
   }
   else
     next();
@@ -59,14 +65,22 @@ app.use((req, res, next) => {
     const parsedTimer = tryParseMarvinTimer(req.body);
     const parsedPomo = tryParseMarvinPomo(req.body);
     if (!parsedTimer && !parsedPomo) {
-        res.sendStatus(400);
+        res.sendStatus(400).json({
+          error: 'api-timer-malformed',
+          message: 'A malformed request was sent to the timer-api',
+          detail: `The following parsing errors were indicated:\n` +
+            `${tryParseMarvinTimer.message} at location ${tryParseMarvinTimer.position}` +
+            `${tryParseMarvinPomo.message} at location ${tryParseMarvinPomo.position}`
+        });
         return;
     }
     if (parsedTimer) {
-      timer.updateTimer(parsedTimer  as unknown as MarvinTimer);
+      timer.updateTimer(parsedTimer as unknown as MarvinTimer);
+      console.log(`Updated timer as regular timer: ${JSON.stringify(parsedTimer)}`);
     }
     else {
-      timer.updatePomodoroTimer(parsedPomo as unknown as MarvinPomodoroTimer); 
+      timer.updatePomodoroTimer(parsedPomo as unknown as MarvinPomodoroTimer);
+      console.log(`Updated timer as pomodoro timer: ${JSON.stringify(parsedPomo)}`);
     }
   }
   next();
@@ -94,7 +108,7 @@ app.post('/rescue_time_start', async (req, res) => {
   console.log(`Passing rescuetime a start session prompt with a duration of ${duration} minutes`);
   axios.post(`https://www.rescuetime.com/anapi/start_focustime?key=${req.get('X-Api-Key')}&duration=${duration}`)
     .then((_) => {/*console.log(response.data);*/res.sendStatus(200);});
-}); 
+});
 
 app.post('/rescue_time_end', async (req, res) => {
   res.set("Access-Control-Allow-Headers", "Content-Type, contenttype, X-Api-Key, Access-Control-Allow-Methods,Access-Control-Allow-Origin,Automin-API-Key");
@@ -109,7 +123,7 @@ app.post('/rescue_time_end', async (req, res) => {
 
 
 /* Pomodoro API */
-app.get("/remaining_duration", (req, res) => {
+app.get("/remaining_duration", (_, res) => {
   res.set("Access-Control-Allow-Headers", "Content-Type, contenttype, X-Api-Key, Access-Control-Allow-Methods,Access-Control-Allow-Origin,Automin-API-Key, Origin-Request");
   res.set("Access-Control-Allow-Methods", "OPTIONS, POST");
   res.set("Access-Control-Allow-Origin","*");
