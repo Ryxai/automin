@@ -7,7 +7,7 @@
     "heroku": "git push heroku main",
     "cycle-key": "npm run clean && npm run build-local && node dist/api_gen.js && node dist/api_check.js",
     "test-key": "node dist/api_check.js",
-    "build": "tsc --build && rm dist/api_gen*",
+    "build": "tsc --build && rm dist/api_*",
     "build-local": "tsc --build",
     "clean": "tsc --build --clean",
     "start": "node dist/index.js"
@@ -22,6 +22,7 @@
     "@types/body-parser": "^1.19.2",
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.29",
+    "ajv": "^8.11.0",
     "axios": "^0.27.1",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
