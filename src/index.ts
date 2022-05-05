@@ -22,7 +22,7 @@ const tryParseMarvinPomo= ajv.compileParser<MarvinPomodoroTimerSchema>(marvinPom
 const serializeTimer= ajv.compileSerializer<TimerSchema>(timerSchema);
 const default_token = "DEFAULT!!!"; // To satisfy typing issues w/ bcrypt
 const hashed_apikey = process.env.APIKEY || "";
-const isOriginRequestsEnforced = process.env.OR_REQ_ENFORCED || false;
+const isOriginRequestsEnforced = process.env.OR_REQ_ENFORCED === "true";
 const isSecure = process.env.APIKEY ? (process.env.SECURE === "true") || false : false;
 const timer : MultiTimer = new MultiTimer();
 app.use(bodyParser.json());
