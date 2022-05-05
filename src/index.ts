@@ -88,6 +88,16 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  if (isOriginRequestsEnforced && !req.get("Origin-Request")){
+    res.status(400).json({
+      error:'api-oreq-enforcement-failure',
+      message: 'failed to include origin-request',
+      details: 'Origin-Request headers are enforced when querying the api, please ensure all triggered api calls include this header'
+    })
+  }
+  next();
+})
 
 
 //CORS handling for Marvin
