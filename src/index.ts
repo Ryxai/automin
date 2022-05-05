@@ -22,6 +22,7 @@ const tryParseMarvinPomo= ajv.compileParser<MarvinPomodoroTimerSchema>(marvinPom
 const serializeTimer= ajv.compileSerializer<TimerSchema>(timerSchema);
 const default_token = "DEFAULT!!!"; // To satisfy typing issues w/ bcrypt
 const hashed_apikey = process.env.APIKEY || "";
+const isOriginRequestsEnforced = process.env.OR_REQ_ENFORCED || false;
 const isSecure = process.env.APIKEY ? (process.env.SECURE === "true") || false : false;
 const timer : MultiTimer = new MultiTimer();
 app.use(bodyParser.json());
@@ -61,7 +62,8 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  if (req.get("Origin-Request")=="Marvin-Timer") {
+  if (req.get("Origin-Request")=="POST-Marvin-Timer-Webhook" && 
+      (isOriginRequestsEnforced ? req.url.includes("rescue_time") : true)) {
     const parsedTimer = tryParseMarvinTimer(req.body);
     const parsedPomo = tryParseMarvinPomo(req.body);
     if (!parsedTimer && !parsedPomo) {
@@ -90,7 +92,9 @@ app.use((req, res, next) => {
 
 //CORS handling for Marvin
 app.options('/*',(_, res) => {
-  res.set("Access-Control-Allow-Headers", "Content-Type, contenttype, X-Api-Key, Access-Control-Allow-Methods,Access-Control-Allow-Origin,Automin-API-Key");
+  res.set("Access-Control-Allow-Headers", "Content-Type, contenttype, X-Api-Key"
+  + ", Access-Control-Allow-Methods,Access-Control-Allow-Origin,Automin-API-Key"
+  + ",Origin-Request");
   res.set("Access-Control-Allow-Methods", "OPTIONS, POST, GET");
   res.set("Access-Control-Allow-Origin","*");
   res.sendStatus(200);
@@ -100,7 +104,7 @@ app.options('/*',(_, res) => {
 
 //Linking Rescuetime to Marvin for timer start/stop etc
 app.post('/rescue_time_start', async (req, res) => {
-  res.set("Access-Control-Allow-Headers", "Content-Type, contenttype, X-Api-Key, Access-Control-Allow-Methods,Access-Control-Allow-Origin,Automin-API-Key");
+  res.set("Access-Control-Allow-Headers", "Content-Type, contenttype, X-Api-Key, Access-Control-Allow-Methods,Access-Control-Allow-Origin,Automin-API-Key,Origin-Request");
   res.set("Access-Control-Allow-Methods", "OPTIONS, POST");
   res.set("Access-Control-Allow-Origin","*");
   const duration = Math.ceil(((req.body.isWork ? req.body.workDuration - req.body.elapsed : (req.body.breakDuration ?? req.body.duration)  - req.body.elapsed)/60000)/5)*5;
@@ -111,7 +115,7 @@ app.post('/rescue_time_start', async (req, res) => {
 });
 
 app.post('/rescue_time_end', async (req, res) => {
-  res.set("Access-Control-Allow-Headers", "Content-Type, contenttype, X-Api-Key, Access-Control-Allow-Methods,Access-Control-Allow-Origin,Automin-API-Key");
+  res.set("Access-Control-Allow-Headers", "Content-Type, contenttype, X-Api-Key, Access-Control-Allow-Methods,Access-Control-Allow-Origin,Automin-API-Key,Origin-Request");
   res.set("Access-Control-Allow-Methods", "OPTIONS, POST");
   res.set("Access-Control-Allow-Origin","*");
   //console.log(req.body);
@@ -128,7 +132,18 @@ app.get("/remaining_duration", (_, res) => {
   res.set("Access-Control-Allow-Methods", "OPTIONS, POST");
   res.set("Access-Control-Allow-Origin","*");
   updateDuration();
-  res.json(timer);
+  if (!timer.isPopulated) {
+    console.log("Timer api called before initialized");
+    res.status(412).json({
+      error:'api-timer-uninitialized',
+      message:'Ther internal server timer has not been updated',
+      details: 'Please start a timer via one of the supported applications to update the system timer first before requesting updates. If you have started a timer, please'
+      + 'ensure that the webhook\'s headers are properly configured to utilize the "Origin-Request" header appropriately.' 
+    })
+  }
+  else {
+    res.status(200).json(timer);
+  }
 });
 
 app.get("/", (_, res) => res.send("See https://github.com/Ryxai/automin for details on how to host your own!"));
