@@ -61,12 +61,27 @@ app.use((req, res, next) => {
     next();
 });
 
+
+app.use((req, res, next) => {
+  if (isOriginRequestsEnforced && !req.get("Origin-Request")){
+    console.log("Origin Request is enforced but the request did not have the header");
+    res.status(400).json({
+      error:'api-oreq-enforcement-failure',
+      message: 'failed to include origin-request',
+      details: 'Origin-Request headers are enforced when querying the api, please ensure all triggered api calls include this header'
+    });
+  }
+  else {
+    next();
+  }
+});
 app.use((req, res, next) => {
   if (req.get("Origin-Request")=="POST-Marvin-Timer-Webhook" && 
       (isOriginRequestsEnforced ? req.url.includes("rescue_time") : true)) {
     const parsedTimer = tryParseMarvinTimer(req.body);
     const parsedPomo = tryParseMarvinPomo(req.body);
     if (!parsedTimer && !parsedPomo) {
+      console.log(`Failed to parse incoming request as a marvin timer: ${req.body}`);
         res.sendStatus(400).json({
           error: 'api-timer-malformed',
           message: 'A malformed request was sent to the timer-api',
@@ -87,20 +102,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
-app.use((req, res, next) => {
-  if (isOriginRequestsEnforced && !req.get("Origin-Request")){
-    console.log("Origin Request is enforced but the request did not have the header");
-    res.status(400).json({
-      error:'api-oreq-enforcement-failure',
-      message: 'failed to include origin-request',
-      details: 'Origin-Request headers are enforced when querying the api, please ensure all triggered api calls include this header'
-    });
-  }
-  else {
-    next();
-  }
-})
 
 
 //CORS handling for Marvin
