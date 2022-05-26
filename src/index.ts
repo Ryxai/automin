@@ -1,8 +1,7 @@
 import process from 'process';
 import express from 'express';
 import bodyParser from 'body-parser';
-import {MultiTimer, timerSchema, TimerSchema} from "./models/timer.model"
-import {authenticateAPIKey} from "./middleware/auth.middleware";
+import {Timer, MultiTimer, timerSchema} from "./models/timer.model"
 import {router} from "./routes/default.routes";
 import Ajv from 'ajv/dist/jtd';
 
@@ -20,11 +19,13 @@ app.set("default_token", "DEFAULT!!!");
 app.set("ajv", new Ajv());
 app.use(bodyParser.json());
 app.use(router);
-app.use(authenticateAPIKey);
 
 /* Pomodoro API */
 app.listen(app.get("port"), () => {
   console.log(`Listening on the port ${app.get("port")}`);
   console.log(`Setup is currently ${app.get("isSecure") ? "secure" : "insecure"}`);
+  console.log(`Timer object is initialized ${
+    (app.get('ajv') as Ajv).compileSerializer(timerSchema)((app.get("Timer") as Timer))
+  }`)
 });
 
