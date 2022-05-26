@@ -19,8 +19,8 @@ app.set("hashed_apikey", process.env.APIKEY || "");
 app.set("default_token", "DEFAULT!!!");
 app.set("ajv", new Ajv());
 app.use(bodyParser.json());
-app.use(authenticateAPIKey);
 app.use(router);
+app.use(authenticateAPIKey);
 
 /* Pomodoro API */
 app.listen(app.get("port"), () => {
