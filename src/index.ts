@@ -8,6 +8,7 @@ import Ajv from 'ajv/dist/jtd';
 /* Configu*/
 const app = express();
 //Setting globals + settings
+app.set("debug", (process.env.DEBUG == "true") || false);
 app.set("port", process.argv[2] || process.env.PORT || 80);
 app.set("Timer", new MultiTimer());
 app.set("isSecure", process.env.APIKEY 
@@ -24,8 +25,9 @@ app.use(router);
 app.listen(app.get("port"), () => {
   console.log(`Listening on the port ${app.get("port")}`);
   console.log(`Setup is currently ${app.get("isSecure") ? "secure" : "insecure"}`);
-  console.log(`Timer object is initialized ${
-    (app.get('ajv') as Ajv).compileSerializer(timerSchema)((app.get("Timer") as Timer))
+  if (app.get("debug"))
+    console.log(`Timer object is initialized ${
+      (app.get('ajv') as Ajv).compileSerializer(timerSchema)((app.get("Timer")))
   }`)
 });
 

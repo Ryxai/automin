@@ -1,8 +1,9 @@
-import {Timer, MultiTimer} from "../models/timer.model";
+import {Timer, MultiTimer, timerSchema} from "../models/timer.model";
 import {MarvinTimer, MarvinPomodoroTimer, ParsedTimerObject,
   marvinTimerSchema,
-  marvinPomodoroTimerSchema} from "../models/marvintimer.model";
+  marvinPomodoroTimerSchema,} from "../models/marvintimer.model";
 import Ajv,{JTDSchemaType} from "ajv/dist/jtd";
+import {Request} from "express";
 
 export const updateTimer = (timer: Timer) : Timer => {
   const time = Date.now();
@@ -30,4 +31,10 @@ export const generateNewTimer = (timer : ParsedTimerObject) : Timer => {
   else 
     throw new Error("Issue with parsed timer, cannot retrieve parsed timer from output object");
   return newTimer;
+}
+
+export const serializeTimer = (request: Request) : string => {
+  const app = request.app;
+  const ajv = app.get("ajv") as Ajv;
+  return ajv.compileSerializer(timerSchema)(app.get("Timer"));
 }

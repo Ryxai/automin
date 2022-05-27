@@ -12,7 +12,8 @@ export const start_focustime = (request: Request, response: Response) => {
           : (request.body.breakDuration 
             ?? request.body.duration)  - request.body.elapsed
       )/60000)/5)*5;
-  console.log(`Passing rescuetime a start session prompt with a duration of ${duration} minutes`);
+  if (request.app.get("debug"))
+    console.log(`Passing rescuetime a start session prompt with a duration of ${duration} minutes`);
   axios.post(`https://www.rescuetime.com/anapi/start_focustime?key=${request.get('X-Api-Key')}&duration=${duration}`)
     .then((_) => {/*console.log(response.data);*/response.sendStatus(200);});
 
@@ -20,7 +21,8 @@ export const start_focustime = (request: Request, response: Response) => {
 
 export const end_focustime = (request: Request, response: Response) => {
   response = setMarvinRequiredHeaders(response);
-  console.log(`Passing rescuetime an end session prompt`);
+  if (request.app.get('debug'))
+    console.log(`Passing rescuetime an end session prompt`);
   axios.post(`https://www.rescuetime.com/anapi/end_focustime?key=${request.get('X-Api-Key')}`)
     .then((_) => {/*console.log(response.data);*/response.sendStatus(200);});
 

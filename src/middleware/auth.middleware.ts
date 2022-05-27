@@ -3,7 +3,7 @@ import {apiKeyCheck} from "../utils/authentication";
 
 export const authenticateAPIKey = (request: Request, response: Response, next: NextFunction) => {
   console.log(`Request from ${request.ip}`);
-  if (!apiKeyCheck(request) && request.originalUrl !== "/"){
+  if (!apiKeyCheck(request)){
     console.log(`Failure to handle authentication: ${request.get("Automin-API-Key")}`);
     response.status(401).json({error: 'Auth-fail',
                          message: 'Failed to authenticate api-key',
@@ -14,6 +14,10 @@ export const authenticateAPIKey = (request: Request, response: Response, next: N
                          + 'further instructions'});
   }
   else {
+    if (request.get("isSecure"))
+      console.log(`Authorized api key`);
+    else
+      console.log(`Insecure, api-check passed`)
     next();
   }
 }
