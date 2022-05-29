@@ -24,8 +24,8 @@ export const start_focustime = (request: Request, response: Response) => {
      .catch((err) => {
         if(request.app.get("debug"))
           logAxiosError(err, request);
+        response.status(400).json(err);
      });
-
 };
 
 export const end_focustime = (request: Request, response: Response) => {
@@ -42,5 +42,6 @@ export const end_focustime = (request: Request, response: Response) => {
     .catch((err) => {
       if(request.app.get("debug"))
         logAxiosError(err, request);
+      response.status(400).json(err);
     });
 }

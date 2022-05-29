@@ -3,6 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import {Timer, MultiTimer, timerSchema} from "./models/timer.model"
 import {router} from "./routes/default.routes";
+import {logError, respondToError} from "./middleware/error.middleware";
 import Ajv from 'ajv/dist/jtd';
 
 /* Configu*/
@@ -20,6 +21,8 @@ app.set("default_token", "DEFAULT!!!");
 app.set("ajv", new Ajv());
 app.use(bodyParser.json());
 app.use(router);
+app.use(logError);
+app.use(respondToError);
 
 /* Pomodoro API */
 app.listen(app.get("port"), () => {
