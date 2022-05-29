@@ -12,6 +12,7 @@ export const authenticateAPIKey = (request: Request, response: Response, next: N
                          + 'server please cycle your keys to update, otherwise'
                          + 'please contact your server administrator for'
                          + 'further instructions'});
+    return;
   }
   else {
     if (request.get("isSecure"))
@@ -20,4 +21,5 @@ export const authenticateAPIKey = (request: Request, response: Response, next: N
       console.log(`Insecure, api-check passed`)
     next();
   }
+  
 }

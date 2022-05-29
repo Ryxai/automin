@@ -1,5 +1,6 @@
 import {Request, Response, NextFunction} from "express";
 import {setMarvinRequiredHeaders} from "../utils/response_headers";
+import {logAxiosError} from "../utils/error";
 import axios from "axios";
 
 export const start_focustime = (request: Request, response: Response) => {
@@ -15,7 +16,15 @@ export const start_focustime = (request: Request, response: Response) => {
   if (request.app.get("debug"))
     console.log(`Passing rescuetime a start session prompt with a duration of ${duration} minutes`);
   axios.post(`https://www.rescuetime.com/anapi/start_focustime?key=${request.get('X-Api-Key')}&duration=${duration}`)
-    .then((_) => {/*console.log(response.data);*/response.sendStatus(200);});
+    .then((resp) => {
+      if(request.app.get("debug"))
+        console.log(`Response was ${resp.data}`);
+      response.sendStatus(200);
+     })
+     .catch((err) => {
+        if(request.app.get("debug"))
+          logAxiosError(err, request);
+     });
 
 };
 
@@ -24,6 +33,14 @@ export const end_focustime = (request: Request, response: Response) => {
   if (request.app.get('debug'))
     console.log(`Passing rescuetime an end session prompt`);
   axios.post(`https://www.rescuetime.com/anapi/end_focustime?key=${request.get('X-Api-Key')}`)
-    .then((_) => {/*console.log(response.data);*/response.sendStatus(200);});
-
+    .then((resp) => 
+          {
+            if (request.app.get("debug"))
+              console.log(resp.data);
+            response.sendStatus(200);
+    })
+    .catch((err) => {
+      if(request.app.get("debug"))
+        logAxiosError(err, request);
+    });
 }
