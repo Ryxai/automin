@@ -15,11 +15,10 @@ export const authenticateAPIKey = (request: Request, response: Response, next: N
     return;
   }
   else {
-    if (request.get("isSecure"))
+    if (request.app.get("isSecure"))
       console.log(`Authorized api key`);
     else
       console.log(`Insecure, api-check passed`)
     next();
   }
-  
 }
