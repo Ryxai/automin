@@ -14,6 +14,8 @@ export interface Timer {
   isPomo : boolean;
   isPopulated: boolean;
   lastUpdated: number;
+  pausedAt: number;
+  isPaused: boolean;
 }
 
 export class MultiTimer implements Timer {
@@ -31,6 +33,8 @@ export class MultiTimer implements Timer {
   isPomo : boolean;
   isPopulated: boolean;
   lastUpdated: number;
+  pausedAt: number;
+  isPaused: boolean;
 
   constructor() {
     this.elapsed = 0;
@@ -46,9 +50,11 @@ export class MultiTimer implements Timer {
     this.isPomo = false;
     this.isPopulated = false;
     this.lastUpdated = Date.now();
+    this.pausedAt = 0;
+    this.isPaused = false;
   }
 
-  updateTimer = (timer: MarvinTimer) => {
+  updateTimer = (timer: MarvinTimer) : Timer => {
     this.elapsed = timer.elapsed;
     this.progress = timer.progress;
     this.duration = timer.duration;
@@ -56,7 +62,7 @@ export class MultiTimer implements Timer {
     this.isPomo = false;
     this.isPopulated = true;
     this.lastUpdated = Date.now();
-    return this;
+    return this as Timer;
   }
 
   updatePomodoroTimer = (timer: MarvinPomodoroTimer) => {
@@ -72,6 +78,16 @@ export class MultiTimer implements Timer {
     this.isPopulated = true;
     this.lastUpdated = Date.now();
     return this;
+  }
+
+  pause = () => {
+    this.pausedAt = Date.now();
+    this.isPaused = true;
+  }
+
+  unpause = () => {
+    this.pausedAt = 0;
+    this.isPaused = false;
   }
 }
 
@@ -89,7 +105,9 @@ export const timerSchema: JTDSchemaType<Timer> = {
     done: {type: "boolean"},
     isPomo : {type: "boolean"},
     isPopulated: {type: "boolean"},
-    lastUpdated: {type: "uint32"}
+    lastUpdated: {type: "uint32"},
+    pausedAt: {type: "uint32"},
+    isPaused: {type: "boolean"}
   }
 }
 

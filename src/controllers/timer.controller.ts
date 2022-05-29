@@ -1,8 +1,6 @@
 import {Request, Response} from "express";
-import Ajv from "ajv/dist/jtd";
-import {timerUninitializedResponse} from "../models/error.model";
-import {Timer,timerSchema} from "../models/timer.model";
-import {updateTimer} from "../utils/timer";
+import {timerUninitializedResponse, timerAlreadyPaused, timerAlreadyUnpaused} from "../models/error.model";
+import {MultiTimer,Timer} from "../models/timer.model"; import {updateTimer} from "../utils/timer";
 import {generateNewTimer, parseTimer, serializeTimer} from "../utils/timer";
 import {setMarvinRequiredHeaders} from "../utils/response_headers";
 
@@ -27,7 +25,7 @@ export const updateServerTimer = (request: Request, response: Response) => {
     console.log(`Updating server using ${request.body} from ${request.ip}`);
   request.app.set("Timer", generateNewTimer(parseTimer(request.body)));
   response = setMarvinRequiredHeaders(response);
-  response.status(200).json({success: true});
+  response.status(200).json({updatedObject: serializeTimer(request.app.get("Timer"))});
 }
 
 export const getTimerObject = (request: Request, response: Response) => {
@@ -42,5 +40,29 @@ export const getTimerObject = (request: Request, response: Response) => {
     if (request.app.get("debug"))
       console.log(`Unable to send the timer since it has not been populated`);
     response.status(412).json(timerUninitializedResponse);
+  }
+}
+
+export const pauseTimer = (request: Request, response: Response) => {
+  const timer : MultiTimer = request.app.get("Timer") as MultiTimer;
+  if(timer.isPaused) {
+    response.status(409).json(timerAlreadyPaused);
+  }
+  else {
+    timer.pause();
+    request.app.set("Timer", timer);
+    response.status(200).json({pausedAt: timer.pausedAt});
+  }
+}
+
+export const unpauseTimer = (request: Request, response: Response) => {
+  const timer: MultiTimer = request.app.get("Timer") as MultiTimer;
+  if (!timer.isPaused) {
+    response.status(409).json(timerAlreadyUnpaused);
+  }
+  else {
+    timer.unpause();
+    request.app.set("Timer", timer);
+    response.status(200).json({unpaused: true});
   }
 }
