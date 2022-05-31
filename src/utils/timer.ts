@@ -14,8 +14,8 @@ export const updateTimer = (timer: MultiTimer) : Timer => {
 
 export const parseTimer = (request: Request) : ParsedTimerObject => {
   const ajv = new Ajv();
-  const timerParser = ajv.compileParser<MarvinTimer>(marvinTimerSchema);
-  const pomodoroTimerParser = ajv.compileParser<MarvinPomodoroTimer>(marvinPomodoroTimerSchema);
+  const timerParser = ajv.compileParser(marvinTimerSchema);
+  const pomodoroTimerParser = ajv.compileParser(marvinPomodoroTimerSchema);
   const timerParseResults = timerParser(JSON.stringify(request.body));
   const pomodoroParseResults = pomodoroTimerParser(JSON.stringify(request.body));
   if (request.app.get("debug"))
