@@ -1,15 +1,12 @@
 import {Timer, MultiTimer, timerSchema} from "../models/timer.model";
-import {MarvinTimer, MarvinPomodoroTimer, ParsedTimerObject,
+import {ParsedTimerObject,
   marvinTimerSchema,
   marvinPomodoroTimerSchema,} from "../models/marvintimer.model";
-import Ajv,{JTDSchemaType} from "ajv/dist/jtd";
+import Ajv from "ajv/dist/jtd";
 import {Request} from "express";
 
-export const updateTimer = (timer: Timer) : Timer => {
-  const time = Date.now();
-  const diff = time - timer.lastUpdated;
-  timer.elapsed += diff;
-  timer.lastUpdated = time;
+export const updateTimer = (timer: MultiTimer) : Timer => {
+  timer.recalculateElapsedTime();
   return timer;
 }
 

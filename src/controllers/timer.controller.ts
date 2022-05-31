@@ -1,6 +1,9 @@
 import {Request, Response} from "express";
-import {timerUninitializedResponse, timerAlreadyPaused, timerAlreadyUnpaused} from "../models/error.model";
-import {MultiTimer,Timer} from "../models/timer.model"; import {updateTimer} from "../utils/timer";
+import {timerUninitializedResponse, 
+  timerAlreadyPaused, 
+  timerAlreadyUnpaused} from "../models/error.model";
+import {MultiTimer,Timer} from "../models/timer.model";
+import {updateTimer} from "../utils/timer";
 import {generateNewTimer, parseTimer, serializeTimer} from "../utils/timer";
 import {setMarvinRequiredHeaders} from "../utils/response_headers";
 
@@ -25,7 +28,8 @@ export const updateServerTimer = (request: Request, response: Response) => {
     console.log(`Updating server using ${request.body} from ${request.ip}`);
   request.app.set("Timer", generateNewTimer(parseTimer(request.body)));
   response = setMarvinRequiredHeaders(response);
-  response.status(200).json({updatedObject: serializeTimer(request.app.get("Timer"))});
+  response.status(200).json({
+    updatedObject: serializeTimer(request.app.get("Timer"))});
 }
 
 export const getTimerObject = (request: Request, response: Response) => {

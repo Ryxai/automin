@@ -1,5 +1,6 @@
 import express from 'express';
-import {start_focustime, end_focustime} from "../controllers/rescuetime.controller";
+import {start_focustime, end_focustime} from 
+  "../controllers/rescuetime.controller";
 import {authenticateAPIKey} from "../middleware/auth.middleware";
 const router = express.Router();
 router.use(authenticateAPIKey);

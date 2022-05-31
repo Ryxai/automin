@@ -81,13 +81,28 @@ export class MultiTimer implements Timer {
   }
 
   pause = () => {
-    this.pausedAt = Date.now();
+    const currentTime = Date.now();
+    this.recalculateElapsedTime();
+    this.pausedAt = currentTime;
     this.isPaused = true;
+    this.lastUpdated = currentTime;
+    return this;
   }
 
   unpause = () => {
+    this.lastUpdated = Date.now();
     this.pausedAt = 0;
     this.isPaused = false;
+    return this;
+  }
+
+  recalculateElapsedTime = () => {
+    if (!this.isPaused) {
+      const current = Date.now();
+      this.elapsed = this.elapsed + (current - this.lastUpdated);
+      this.lastUpdated = current;
+    }
+    return this;
   }
 }
 

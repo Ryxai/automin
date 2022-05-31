@@ -47,7 +47,8 @@ export const marvinPomodoroTimerSchema: JTDSchemaType<MarvinPomodoroTimer> = {
 }
 
 export type MarvinTimerSchema = JTDSchemaType<typeof marvinTimerSchema>;
-export type MarvinPomodoroTimerSchema = JTDSchemaType<typeof marvinPomodoroTimerSchema>;
+export type MarvinPomodoroTimerSchema = 
+  JTDSchemaType<typeof marvinPomodoroTimerSchema>;
 export interface ParsedTimerObject {
   timer? : MarvinTimer;
   pomodoroTimer? : MarvinPomodoroTimer;

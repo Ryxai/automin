@@ -18,3 +18,6 @@ export const logAxiosError = (error: Error | AxiosError, request: Request)
         console.log(`Errror message was: ${error.message}`);
     }
   }
+
+
+

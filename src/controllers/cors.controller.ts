@@ -1,13 +1,9 @@
 import {Request, Response} from "express";
+import {setMarvinRequiredHeaders} from "../utils/response_headers";
 
 export const marvinCORS = (request: Request, response: Response) => {
   if (request.app.get('debug'))
     console.log(`Options request from ${request.ip}`)
-  response.set("Access-Control-Allow-Headers", "Content-Type, contenttype, X-Api-Key"
-  + ", Access-Control-Allow-Methods,Access-Control-Allow-Origin,Automin-API-Key"
-  + ",Origin-Request");
-  response.set("Access-Control-Allow-Methods", "OPTIONS, POST, GET");
-  response.set("Access-Control-Allow-Origin","*");
+  response = setMarvinRequiredHeaders(response);
   response.sendStatus(200);
-
 };
