@@ -8,7 +8,6 @@ import {generateNewTimer, parseTimer, serializeTimer} from "../utils/timer";
 import {setMarvinRequiredHeaders} from "../utils/response_headers";
 
 
-
 export const getRemainingDuration = (request: Request, response: Response) => {
   const timer = request.app.get("Timer");
   request.app.set("Timer", updateTimer(timer));
@@ -26,7 +25,10 @@ export const getRemainingDuration = (request: Request, response: Response) => {
 export const updateServerTimer = (request: Request, response: Response) => {
   if (request.app.get("debug"))
     console.log(`Updating server using ${request.body} from ${request.ip}`);
-  request.app.set("Timer", generateNewTimer(parseTimer(request.body)));
+  const parsedTimer = parseTimer(request.body);
+  if (request.app.get("debug"))
+    console.log(parsedTimer)
+  request.app.set("Timer", generateNewTimer(parsedTimer));
   response = setMarvinRequiredHeaders(response);
   response.status(200).json({
     updatedObject: serializeTimer(request.app.get("Timer"))});
@@ -69,4 +71,8 @@ export const unpauseTimer = (request: Request, response: Response) => {
     request.app.set("Timer", timer);
     response.status(200).json({unpaused: true});
   }
+}
+
+export const endTimer = (request: Request, response: Response) => {
+  
 }

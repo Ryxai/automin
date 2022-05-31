@@ -21,12 +21,13 @@ export const parseTimer = (jsonObject: string) : ParsedTimerObject => {
 
 export const generateNewTimer = (timer : ParsedTimerObject) : Timer => {
   const newTimer = new MultiTimer();
-  if ("timer" in timer && timer.timer)
+  if ("timer" in timer && timer.timer !== undefined)
    newTimer.updateTimer(timer.timer);
-  else if ("pomodoroTimer" in timer && timer.pomodoroTimer)
+  else if ("pomodoroTimer" in timer && timer.pomodoroTimer !== undefined)
     newTimer.updatePomodoroTimer(timer.pomodoroTimer);
   else 
-    throw new Error("Issue with parsed timer, cannot retrieve parsed timer from output object");
+    throw new Error("Issue with parsed timer, cannot retrieve parsed timer " 
+                    + "from output object");
   return newTimer;
 }
 

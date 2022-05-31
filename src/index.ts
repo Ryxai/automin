@@ -1,7 +1,7 @@
 import process from 'process';
 import express from 'express';
 import bodyParser from 'body-parser';
-import {Timer, MultiTimer, timerSchema} from "./models/timer.model"
+import {MultiTimer, timerSchema} from "./models/timer.model"
 import {router} from "./routes/default.routes";
 import {logError, respondToError} from "./middleware/error.middleware";
 import Ajv from 'ajv/dist/jtd';
