@@ -26,6 +26,8 @@ app.use(respondToError);
 
 /* Pomodoro API */
 app.listen(app.get("port"), () => {
+  if (app.get("debug"))
+    console.log("Running in debug mode");
   console.log(`Listening on the port ${app.get("port")}`);
   console.log(`Setup is currently ${app.get("isSecure") ? "secure" : "insecure"}`);
   if (app.get("debug"))
