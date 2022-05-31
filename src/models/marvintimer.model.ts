@@ -1,6 +1,7 @@
 import {JTDSchemaType} from "ajv/dist/jtd";
 
 export interface MarvinTimer {
+  timerId?: number;
   elapsed: number,
   progress: number,
   duration: number,
@@ -10,6 +11,7 @@ export interface MarvinTimer {
 }
 
 export interface MarvinPomodoroTimer {
+  timerId?: number;
   elapsed: number,
   progress: number,
   workDuration: number,
@@ -19,6 +21,7 @@ export interface MarvinPomodoroTimer {
   beepCount: number,
   isWork: boolean,
   done: boolean
+  taskId: string | null;
 }
 
 export const marvinTimerSchema : JTDSchemaType<MarvinTimer> = {
@@ -29,6 +32,9 @@ export const marvinTimerSchema : JTDSchemaType<MarvinTimer> = {
     taskId: {type: "string"},
     beepCount: {type: "uint32"},
     done: {type: "boolean"}
+  },
+  optionalProperties: {
+    timerId: {type: "uint32"}
   }
 }
 
@@ -42,7 +48,11 @@ export const marvinPomodoroTimerSchema: JTDSchemaType<MarvinPomodoroTimer> = {
     repeat: {type: "uint32"},
     beepCount: {type: "uint32"},
     isWork: {type: "boolean"},
-    done: {type: "boolean"}
+    done: {type: "boolean"},
+    taskId: {type: "string", nullable: true}
+  },
+  optionalProperties: {
+    timerId: {type: "uint32"},
   }
 }
 
