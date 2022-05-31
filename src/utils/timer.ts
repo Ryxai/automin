@@ -1,5 +1,7 @@
 import {Timer, MultiTimer, timerSchema} from "../models/timer.model";
 import {ParsedTimerObject,
+  MarvinTimer,
+  MarvinPomodoroTimer,
   marvinTimerSchema,
   marvinPomodoroTimerSchema,} from "../models/marvintimer.model";
 import Ajv from "ajv/dist/jtd";
@@ -12,8 +14,8 @@ export const updateTimer = (timer: MultiTimer) : Timer => {
 
 export const parseTimer = (jsonObject: string) : ParsedTimerObject => {
   const ajv = new Ajv();
-  const timerParser = ajv.compileParser(marvinTimerSchema);
-  const pomodoroTimerParser = ajv.compileParser(marvinPomodoroTimerSchema);
+  const timerParser = ajv.compileParser<MarvinTimer>(marvinTimerSchema);
+  const pomodoroTimerParser = ajv.compileParser<MarvinPomodoroTimer>(marvinPomodoroTimerSchema);
   const timerParseResults = timerParser(jsonObject);
   return timerParseResults
     ? {timer: timerParseResults} : {pomodoroTimer: pomodoroTimerParser(jsonObject)}
