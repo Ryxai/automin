@@ -2,7 +2,6 @@ import {JTDSchemaType} from "ajv/dist/jtd";
 import {MarvinTimer, MarvinPomodoroTimer} from "./marvintimer.model";
 export interface Timer {
   elapsed: number;
-  progress: number;
   workDuration: number;
   breakDuration: number;
   duration: number;
@@ -55,10 +54,10 @@ export class MultiTimer implements Timer {
   }
 
   updateTimer = (timer: MarvinTimer) : Timer => {
+    this
     this.elapsed = timer.elapsed;
-    this.progress = timer.progress;
     this.duration = timer.duration;
-    this.taskId = timer.taskId ? timer.taskId : "";
+    this.taskId = timer.taskId ?? "";
     this.done = timer.done;
     this.isPomo = false;
     this.isPopulated = true;
@@ -68,7 +67,6 @@ export class MultiTimer implements Timer {
 
   updatePomodoroTimer = (timer: MarvinPomodoroTimer) => {
     this.elapsed = timer.elapsed;
-    this.progress = timer.progress;
     this.workDuration = timer.workDuration;
     this.breakDuration = timer.breakDuration;
     this.cycle = timer.cycle;
@@ -110,7 +108,6 @@ export class MultiTimer implements Timer {
 export const timerSchema: JTDSchemaType<Timer> = {
   properties: {
     elapsed: {type: "uint32"},
-    progress: {type: "uint32"},
     workDuration: {type: "uint32"},
     breakDuration: {type: "uint32"},
     duration: {type: "uint32"},
