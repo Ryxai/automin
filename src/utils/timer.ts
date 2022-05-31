@@ -38,7 +38,6 @@ export const generateNewTimer = (timer : ParsedTimerObject) : Timer => {
 }
 
 export const serializeTimer = (request: Request) : string => {
-  const app = request.app;
-  const ajv = app.get("ajv") as Ajv;
-  return ajv.compileSerializer(timerSchema)(app.get("Timer"));
+  const ajv = request.app.get("ajv") as Ajv;
+  return ajv.compileSerializer(timerSchema)(request.app.get("Timer"));
 }
