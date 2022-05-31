@@ -58,7 +58,8 @@ export class MultiTimer implements Timer {
     this.elapsed = timer.elapsed;
     this.progress = timer.progress;
     this.duration = timer.duration;
-    this.taskId = timer.taskId; this.done = timer.done;
+    this.taskId = timer.taskId ? timer.taskId : "";
+    this.done = timer.done;
     this.isPomo = false;
     this.isPopulated = true;
     this.lastUpdated = Date.now();
