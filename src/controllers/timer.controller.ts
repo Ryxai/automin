@@ -25,7 +25,7 @@ export const getRemainingDuration = (request: Request, response: Response) => {
 export const updateServerTimer = (request: Request, response: Response) => {
   if (request.app.get("debug"))
     console.log(`Updating server using ${JSON.stringify(request.body)} from ${request.ip}`);
-  const parsedTimer = parseTimer(request.body);
+  const parsedTimer = parseTimer(request);
   if (request.app.get("debug"))
     console.log(`The parsed object is ${JSON.stringify(parsedTimer)}`);
   request.app.set("Timer", generateNewTimer(parsedTimer));

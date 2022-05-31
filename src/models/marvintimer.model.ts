@@ -5,7 +5,7 @@ export interface MarvinTimer {
   elapsed: number,
   progress: number,
   duration: number,
-  taskId: string,
+  taskId: string | null,
   beepCount: number,
   done: boolean
 }
@@ -29,7 +29,7 @@ export const marvinTimerSchema : JTDSchemaType<MarvinTimer> = {
     elapsed: {type: "uint32"},
     progress: {type: "uint32"},
     duration: {type: "uint32"},
-    taskId: {type: "string"},
+    taskId: {type: "string", nullable: true},
     beepCount: {type: "uint32"},
     done: {type: "boolean"}
   },
