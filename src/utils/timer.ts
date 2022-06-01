@@ -1,5 +1,7 @@
 import {Timer, MultiTimer, timerSchema} from "../models/timer.model";
 import {ParsedTimerObject,
+  MarvinTimer,
+  MarvinPomodoroTimer,
   marvinTimerSchema,
   marvinPomodoroTimerSchema,} from "../models/marvintimer.model";
 import Ajv from "ajv/dist/jtd";
@@ -10,13 +12,17 @@ export const updateTimer = (timer: MultiTimer) : Timer => {
   return timer;
 }
 
-export const parseTimer = (jsonObject: string) : ParsedTimerObject => {
+export const parseTimer = (request: Request) : ParsedTimerObject => {
   const ajv = new Ajv();
   const timerParser = ajv.compileParser(marvinTimerSchema);
   const pomodoroTimerParser = ajv.compileParser(marvinPomodoroTimerSchema);
-  const timerParseResults = timerParser(jsonObject);
+  const timerParseResults = timerParser(JSON.stringify(request.body));
+  const pomodoroParseResults = pomodoroTimerParser(JSON.stringify(request.body));
+  if (request.app.get("debug"))
+    console.log(`The timer parse results: ${timerParseResults} `
+               + `and the pomodoro parse results are ${pomodoroParseResults}`);
   return timerParseResults
-    ? {timer: timerParseResults} : {pomodoroTimer: pomodoroTimerParser(jsonObject)}
+    ? {timer: timerParseResults} : {pomodoroTimer: pomodoroParseResults};
 }
 
 export const generateNewTimer = (timer : ParsedTimerObject) : Timer => {
@@ -32,7 +38,6 @@ export const generateNewTimer = (timer : ParsedTimerObject) : Timer => {
 }
 
 export const serializeTimer = (request: Request) : string => {
-  const app = request.app;
-  const ajv = app.get("ajv") as Ajv;
-  return ajv.compileSerializer(timerSchema)(app.get("Timer"));
+  const ajv = request.app.get("ajv") as Ajv;
+  return ajv.compileSerializer(timerSchema)(request.app.get("Timer"));
 }

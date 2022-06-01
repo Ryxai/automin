@@ -24,14 +24,14 @@ export const getRemainingDuration = (request: Request, response: Response) => {
 
 export const updateServerTimer = (request: Request, response: Response) => {
   if (request.app.get("debug"))
-    console.log(`Updating server using ${request.body} from ${request.ip}`);
-  const parsedTimer = parseTimer(request.body);
+    console.log(`Updating server using ${JSON.stringify(request.body)} from ${request.ip}`);
+  const parsedTimer = parseTimer(request);
   if (request.app.get("debug"))
-    console.log(parsedTimer)
+    console.log(`The parsed object is ${JSON.stringify(parsedTimer)}`);
   request.app.set("Timer", generateNewTimer(parsedTimer));
   response = setMarvinRequiredHeaders(response);
   response.status(200).json({
-    updatedObject: serializeTimer(request.app.get("Timer"))});
+    updatedObject: serializeTimer(request)});
 }
 
 export const getTimerObject = (request: Request, response: Response) => {
