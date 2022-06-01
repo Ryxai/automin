@@ -31,7 +31,7 @@ export const updateServerTimer = (request: Request, response: Response) => {
   request.app.set("Timer", generateNewTimer(parsedTimer));
   response = setMarvinRequiredHeaders(response);
   response.status(200).json({
-    updatedObject: serializeTimer(request.app.get("Timer"))});
+    updatedObject: serializeTimer(request)});
 }
 
 export const getTimerObject = (request: Request, response: Response) => {

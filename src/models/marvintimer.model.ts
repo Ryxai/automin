@@ -4,6 +4,7 @@ export interface MarvinTimer {
   timerId?: number;
   progress?: number,
   needsConfirmation?: boolean
+  repeat?: boolean
   elapsed: number,
   duration: number,
   taskId: string | null,
@@ -30,7 +31,8 @@ export const marvinTimerSchema : JTDSchemaType<MarvinTimer> = {
   optionalProperties: {
     timerId: {type: "uint32"},
     progress: {type: "uint32"},
-    needsConfirmation: {type: "boolean"}
+    needsConfirmation: {type: "boolean"},
+    repeat: {type: "boolean"}
   },
   properties: {
     elapsed: {type: "uint32"},
